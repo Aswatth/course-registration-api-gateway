@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,7 +13,7 @@ type LoginService struct {
 }
 
 func (obj *LoginService) Login(ctx *gin.Context) (string, int) {
-	response, err := http.Post("http://localhost:9999/login", "json", ctx.Request.Body)
+	response, err := http.Post(os.Getenv("PROFILE_SERVICE")+"/login", "json", ctx.Request.Body)
 
 	if err != nil {
 		return "", http.StatusBadRequest

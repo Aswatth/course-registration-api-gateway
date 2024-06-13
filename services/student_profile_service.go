@@ -2,6 +2,7 @@ package services
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,7 +16,7 @@ func (obj *StudentProfileService) Init() {
 }
 
 func (obj *StudentProfileService) CreateStudentProfile(context *gin.Context) {
-	req, _ := http.NewRequest("POST", "http://localhost:9999/admin/students", context.Request.Body)
+	req, _ := http.NewRequest("POST", os.Getenv("PROFILE_SERVICE")+"/admin/students", context.Request.Body)
 
 	req.Header.Set("Authorization", context.Request.Header.Get("Authorization"))
 
@@ -23,7 +24,7 @@ func (obj *StudentProfileService) CreateStudentProfile(context *gin.Context) {
 }
 
 func (obj *StudentProfileService) UpdateStudentProfile(context *gin.Context) {
-	req, _ := http.NewRequest("PUT", "http://localhost:9999/admin/students/"+context.Param("email_id"), context.Request.Body)
+	req, _ := http.NewRequest("PUT", os.Getenv("PROFILE_SERVICE")+"/admin/students/"+context.Param("email_id"), context.Request.Body)
 
 	req.Header.Set("Authorization", context.Request.Header.Get("Authorization"))
 
@@ -31,7 +32,7 @@ func (obj *StudentProfileService) UpdateStudentProfile(context *gin.Context) {
 }
 
 func (obj *StudentProfileService) DeleteStudentProfile(context *gin.Context) {
-	req, _ := http.NewRequest("DELETE", "http://localhost:9999/admin/students/"+context.Param("email_id"), context.Request.Body)
+	req, _ := http.NewRequest("DELETE", os.Getenv("PROFILE_SERVICE")+"/admin/students/"+context.Param("email_id"), context.Request.Body)
 
 	req.Header.Set("Authorization", context.Request.Header.Get("Authorization"))
 
