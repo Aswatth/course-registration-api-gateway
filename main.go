@@ -1,6 +1,8 @@
 package main
 
 import (
+	"course-registration-system/api-gateway/controllers"
+	"course-registration-system/api-gateway/services"
 	"log"
 	"os"
 
@@ -14,12 +16,21 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
+	login_service := new(services.LoginService)
+	login_controller := new(controllers.LoginController)
+	login_controller.Init(login_service)
+
+	server := gin.Default()
+
+	base_path := server.Group("/api")
+
+	login_controller.RegisterRoutes(base_path)
+
+	server.GET("/isAlive", func(c *gin.Context) {
 		c.JSON(200, gin.H{
-			"message": "pong",
+			"message": "Yes",
 		})
 	})
 
-	r.Run(":" + os.Getenv("PORT"))
+	server.Run(":" + os.Getenv("PORT"))
 }
