@@ -18,13 +18,20 @@ func main() {
 
 	login_service := new(services.LoginService)
 	login_controller := new(controllers.LoginController)
-	login_controller.Init(login_service)
+	login_controller.Init(*login_service)
+
+	profile_service := new(services.StudentProfileService)
+	profile_service.Init()
+
+	profile_controller := new(controllers.StudentProfileController)
+	profile_controller.Init(*profile_service)
 
 	server := gin.Default()
 
 	base_path := server.Group("/api")
 
 	login_controller.RegisterRoutes(base_path)
+	profile_controller.RegisterRoutes(base_path)
 
 	server.GET("/isAlive", func(c *gin.Context) {
 		c.JSON(200, gin.H{
