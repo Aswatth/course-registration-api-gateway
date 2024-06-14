@@ -15,7 +15,13 @@ import (
 func ValidateAuthorization(authorized_users []string) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		//Get authorization token from cookies
-		token_string := strings.Split(context.Request.Header.Get("Authorization"), " ")[1]
+		header := context.Request.Header.Get("Authorization")
+
+		if header == "" {
+			context.AbortWithError(http.StatusUnauthorized, errors.New("authorization token not found"))
+		}
+
+		token_string := strings.Split(header, " ")[1]
 
 		// Parse the token
 		token, err := jwt.Parse(token_string, func(token *jwt.Token) (interface{}, error) {

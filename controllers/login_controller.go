@@ -15,13 +15,13 @@ func (obj *LoginController) Init(service services.LoginService) {
 }
 
 func (obj *LoginController) Login(context *gin.Context) {
-	token, status_code := obj.service.Login(context)
+	token, status_code, err := obj.service.Login(context)
 
-	if token != "" {
+	if err == nil {
 		context.JSON(status_code, gin.H{"token": token})
 	}
 
-	context.AbortWithStatus(status_code)
+	context.AbortWithError(status_code, err)
 }
 
 func (obj *LoginController) RegisterRoutes(rg *gin.RouterGroup) {

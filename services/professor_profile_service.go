@@ -16,7 +16,7 @@ func (obj *ProfessorProfileService) Init() {
 }
 
 func (obj *ProfessorProfileService) CreateProfessorProfile(context *gin.Context) {
-	req, _ := http.NewRequest("POST", os.Getenv("PROFILE_SERVICE")+"admin/professors", context.Request.Body)
+	req, _ := http.NewRequest("POST", os.Getenv("PROFILE_SERVICE")+"/admin/professors", context.Request.Body)
 
 	req.Header.Set("Authorization", context.Request.Header.Get("Authorization"))
 
