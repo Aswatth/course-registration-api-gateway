@@ -15,22 +15,14 @@ func (obj *ProfessorProfileController) Init(service services.ProfessorProfileSer
 	obj.service = service
 }
 
-func (obj *ProfessorProfileController) CreateProfessor(context *gin.Context) {
-	obj.service.CreateProfessorProfile(context)
-}
-
-func (obj *ProfessorProfileController) UpdateProfessor(context *gin.Context) {
-	obj.service.UpdateProfessorProfile(context)
-}
-
-func (obj *ProfessorProfileController) DeleteProfessor(context *gin.Context) {
-	obj.service.DeleteProfessorProfile(context)
+func (obj *ProfessorProfileController) UpdateProfessorPassword(context *gin.Context) {
+	// obj.service.UpdateStudentPassword(context)
 }
 
 func (obj *ProfessorProfileController) RegisterRoutes(rg *gin.RouterGroup) {
-	profile_routes := rg.Group("")
+	professor_routes := rg.Group("")
 
-	profile_routes.Use(middlewares.ValidateAuthorization([]string{"ADMIN"})).POST("/professors", obj.CreateProfessor)
-	profile_routes.Use(middlewares.ValidateAuthorization([]string{"ADMIN"})).DELETE("/professors/:email_id", obj.DeleteProfessor)
-	profile_routes.Use(middlewares.ValidateAuthorization([]string{"ADMIN"})).PUT("/professors/:email_id", obj.UpdateProfessor)
+	professor_routes.Use(middlewares.ValidateAuthorization([]string{"PROFESSOR"}))
+
+	professor_routes.PUT("/professors/password/:email_id", obj.UpdateProfessorPassword)
 }

@@ -20,6 +20,12 @@ func main() {
 	login_controller := new(controllers.LoginController)
 	login_controller.Init(*login_service)
 
+	admin_service := new(services.AdminService)
+	admin_service.Init()
+
+	admin_controller := new(controllers.AdminController)
+	admin_controller.Init(*admin_service)
+
 	student_profile_service := new(services.StudentProfileService)
 	student_profile_service.Init()
 

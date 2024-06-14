@@ -44,9 +44,11 @@ func ValidateAuthorization(authorized_users []string) gin.HandlerFunc {
 			if float64(time.Now().Unix()) > claims["expiry"].(float64) {
 				context.AbortWithError(http.StatusUnauthorized, errors.New("token expired"))
 			} else {
+				current_user := claims["user_type"].(string)
+
 				//Check for expected user type
 				for _, authorized_user := range authorized_users {
-					if claims["user_type"] == authorized_user {
+					if strings.EqualFold(current_user, authorized_user) {
 						context.Next()
 						return
 					}
