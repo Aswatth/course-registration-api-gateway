@@ -39,6 +39,10 @@ func (obj *AdminController) DeleteProfessor(context *gin.Context) {
 	obj.service.DeleteProfessorProfile(context)
 }
 
+func (obj *AdminController) UpdatePassword(context *gin.Context) {
+	obj.service.UpdatePassword(context)
+}
+
 func (obj *AdminController) RegisterRoutes(rg *gin.RouterGroup) {
 	admin_routes := rg.Group("/admin")
 
@@ -51,4 +55,6 @@ func (obj *AdminController) RegisterRoutes(rg *gin.RouterGroup) {
 	admin_routes.POST("/professors", obj.CreateProfessor)
 	admin_routes.DELETE("/professors/:email_id", obj.DeleteProfessor)
 	admin_routes.PUT("/professors/:email_id", obj.UpdateProfessor)
+
+	admin_routes.PUT("/password/:email_id", obj.UpdatePassword)
 }

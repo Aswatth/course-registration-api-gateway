@@ -16,13 +16,13 @@ func (obj *ProfessorProfileController) Init(service services.ProfessorProfileSer
 }
 
 func (obj *ProfessorProfileController) UpdateProfessorPassword(context *gin.Context) {
-	// obj.service.UpdateStudentPassword(context)
+	obj.service.UpdateProfessorPassword(context)
 }
 
 func (obj *ProfessorProfileController) RegisterRoutes(rg *gin.RouterGroup) {
-	professor_routes := rg.Group("")
+	professor_routes := rg.Group("/professors")
 
 	professor_routes.Use(middlewares.ValidateAuthorization([]string{"PROFESSOR"}))
 
-	professor_routes.PUT("/professors/password/:email_id", obj.UpdateProfessorPassword)
+	professor_routes.PUT("/password/:email_id", obj.UpdateProfessorPassword)
 }

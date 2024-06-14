@@ -15,8 +15,14 @@ func (obj *StudentProfileController) Init(service services.StudentProfileService
 	obj.service = service
 }
 
-func (obj *StudentProfileController) RegisterRoutes(rg *gin.RouterGroup) {
-	profile_routes := rg.Group("")
+func (obj *StudentProfileController) UpdateStudentPassword(context *gin.Context) {
+	obj.service.UpdateStudentPassword(context)
+}
 
-	profile_routes.Use(middlewares.ValidateAuthorization([]string{"STUDENT"}))
+func (obj *StudentProfileController) RegisterRoutes(rg *gin.RouterGroup) {
+	student_routes := rg.Group("/students")
+
+	student_routes.Use(middlewares.ValidateAuthorization([]string{"STUDENT"}))
+
+	student_routes.PUT("/password/:email_id", obj.UpdateStudentPassword)
 }

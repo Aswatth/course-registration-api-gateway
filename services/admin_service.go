@@ -62,3 +62,11 @@ func (obj *AdminService) DeleteProfessorProfile(context *gin.Context) {
 
 	obj.client.Do(req)
 }
+
+func (obj *AdminService) UpdatePassword(context *gin.Context) {
+	req, _ := http.NewRequest("PUT", os.Getenv("PROFILE_SERVICE")+"/admin/password/"+context.Param("email_id"), context.Request.Body)
+
+	req.Header.Set("Authorization", context.Request.Header.Get("Authorization"))
+
+	obj.client.Do(req)
+}
