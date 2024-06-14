@@ -43,6 +43,7 @@ func main() {
 	base_path := server.Group("/api")
 
 	login_controller.RegisterRoutes(base_path)
+	admin_controller.RegisterRoutes(base_path)
 	student_profile_controller.RegisterRoutes(base_path)
 	professor_profile_controller.RegisterRoutes(base_path)
 

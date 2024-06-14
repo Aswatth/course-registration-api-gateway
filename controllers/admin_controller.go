@@ -40,7 +40,7 @@ func (obj *AdminController) DeleteProfessor(context *gin.Context) {
 }
 
 func (obj *AdminController) RegisterRoutes(rg *gin.RouterGroup) {
-	admin_routes := rg.Group("admin")
+	admin_routes := rg.Group("/admin")
 
 	admin_routes.Use(middlewares.ValidateAuthorization([]string{"ADMIN"}))
 
