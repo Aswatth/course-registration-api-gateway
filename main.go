@@ -26,6 +26,12 @@ func main() {
 	admin_profile_controller := new(controllers.AdminProfileController)
 	admin_profile_controller.Init(*admin_profile_service)
 
+	admin_course_service := new(services.AdminCourseService)
+	admin_course_service.Init()
+
+	admin_course_controller := new(controllers.AdminCourseController)
+	admin_course_controller.Init(*admin_course_service)
+
 	student_profile_service := new(services.StudentProfileService)
 	student_profile_service.Init()
 
@@ -44,6 +50,7 @@ func main() {
 
 	login_controller.RegisterRoutes(base_path)
 	admin_profile_controller.RegisterRoutes(base_path)
+	admin_course_controller.RegisterRoutes(base_path)
 	student_profile_controller.RegisterRoutes(base_path)
 	professor_profile_controller.RegisterRoutes(base_path)
 
