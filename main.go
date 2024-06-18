@@ -20,11 +20,11 @@ func main() {
 	login_controller := new(controllers.LoginController)
 	login_controller.Init(*login_service)
 
-	admin_service := new(services.AdminService)
-	admin_service.Init()
+	admin_profile_service := new(services.AdminProfileService)
+	admin_profile_service.Init()
 
-	admin_controller := new(controllers.AdminController)
-	admin_controller.Init(*admin_service)
+	admin_profile_controller := new(controllers.AdminProfileController)
+	admin_profile_controller.Init(*admin_profile_service)
 
 	student_profile_service := new(services.StudentProfileService)
 	student_profile_service.Init()
@@ -43,7 +43,7 @@ func main() {
 	base_path := server.Group("/api")
 
 	login_controller.RegisterRoutes(base_path)
-	admin_controller.RegisterRoutes(base_path)
+	admin_profile_controller.RegisterRoutes(base_path)
 	student_profile_controller.RegisterRoutes(base_path)
 	professor_profile_controller.RegisterRoutes(base_path)
 
