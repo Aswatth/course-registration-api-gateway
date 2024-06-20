@@ -18,28 +18,29 @@ func (obj *LoginService) Login(ctx *gin.Context) (string, int, error) {
 	response, err := http.Post(os.Getenv("PROFILE_SERVICE")+"/login", "json", ctx.Request.Body)
 
 	if err != nil {
-		return "", http.StatusBadRequest, errors.New("unable to login")
+		return "", http.StatusInternalServerError, errors.New("unable to access login service")
 	}
 
 	if response.StatusCode == http.StatusOK {
 		body, _ := io.ReadAll(response.Body)
 
-		type user_type struct {
-			User_type string
-		}
+		data := make(map[string]string)
 
-		var user_type_data user_type
+		json.Unmarshal(body, &data)
 
-		json.Unmarshal(body, &user_type_data)
-
-		token, err := utils.GenerateToken(user_type_data.User_type)
+		token, err := utils.GenerateToken(data["user_type"])
 
 		if err != nil {
 			return "", http.StatusBadRequest, errors.New("unable to generate token")
 		}
 
 		return token, http.StatusOK, nil
-	}
+	} else {
+		response_body, _ := io.ReadAll(response.Body)
 
-	return "", http.StatusBadRequest, errors.New("unable to login")
+		data := make(map[string]string)
+		json.Unmarshal(response_body, &data)
+
+		return "", response.StatusCode, errors.New(data["response"])
+	}
 }

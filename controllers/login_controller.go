@@ -17,11 +17,11 @@ func (obj *LoginController) Init(service services.LoginService) {
 func (obj *LoginController) Login(context *gin.Context) {
 	token, status_code, err := obj.service.Login(context)
 
-	if err == nil {
+	if err != nil {
+		context.AbortWithStatusJSON(status_code, gin.H{"response": err.Error()})
+	} else {
 		context.JSON(status_code, gin.H{"token": token})
 	}
-
-	context.AbortWithError(status_code, err)
 }
 
 func (obj *LoginController) RegisterRoutes(rg *gin.RouterGroup) {
