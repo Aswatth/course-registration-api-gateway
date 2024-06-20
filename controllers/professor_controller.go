@@ -3,8 +3,6 @@ package controllers
 import (
 	"course-registration-system/api-gateway/middlewares"
 	"course-registration-system/api-gateway/services"
-	"encoding/json"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,6 +15,10 @@ func (obj *ProfessorProfileController) Init(service services.ProfessorProfileSer
 	obj.service = service
 }
 
+func (obj *ProfessorProfileController) GetProfessorProfile(context *gin.Context) {
+	obj.service.GetProfessorProfile(context)
+}
+
 func (obj *ProfessorProfileController) UpdateProfessorPassword(context *gin.Context) {
 	obj.service.UpdateProfessorPassword(context)
 }
@@ -26,17 +28,7 @@ func (obj *ProfessorProfileController) OfferCourse(context *gin.Context) {
 }
 
 func (obj *ProfessorProfileController) GetOfferedCourse(context *gin.Context) {
-	result, err := obj.service.GetOfferedCourse(context)
-
-	if err != nil {
-		context.AbortWithStatusJSON(http.StatusBadRequest, err)
-	}
-
-	var data interface{}
-
-	json.Unmarshal(result, &data)
-
-	context.JSON(http.StatusOK, data)
+	obj.service.GetOfferedCourse(context)
 }
 
 func (obj *ProfessorProfileController) UpdateOfferedCourse(context *gin.Context) {
@@ -52,6 +44,7 @@ func (obj *ProfessorProfileController) RegisterRoutes(rg *gin.RouterGroup) {
 
 	professor_routes.Use(middlewares.ValidateAuthorization([]string{"PROFESSOR"}))
 
+	professor_routes.GET("/:email_id", obj.GetProfessorProfile)
 	professor_routes.PUT("/password/:email_id", obj.UpdateProfessorPassword)
 
 	professor_routes.POST("/offered_course", obj.OfferCourse)

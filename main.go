@@ -32,17 +32,17 @@ func main() {
 	admin_course_controller := new(controllers.AdminCourseController)
 	admin_course_controller.Init(*admin_course_service)
 
-	student_profile_service := new(services.StudentProfileService)
-	student_profile_service.Init()
+	student_service := new(services.StudentProfileService)
+	student_service.Init()
 
-	student_profile_controller := new(controllers.StudentProfileController)
-	student_profile_controller.Init(*student_profile_service)
+	student_controller := new(controllers.StudentProfileController)
+	student_controller.Init(*student_service)
 
-	professor_profile_service := new(services.ProfessorProfileService)
-	professor_profile_service.Init()
+	professor_service := new(services.ProfessorProfileService)
+	professor_service.Init()
 
-	professor_profile_controller := new(controllers.ProfessorProfileController)
-	professor_profile_controller.Init(*professor_profile_service)
+	professor_controller := new(controllers.ProfessorProfileController)
+	professor_controller.Init(*professor_service)
 
 	server := gin.Default()
 
@@ -51,8 +51,8 @@ func main() {
 	login_controller.RegisterRoutes(base_path)
 	admin_profile_controller.RegisterRoutes(base_path)
 	admin_course_controller.RegisterRoutes(base_path)
-	student_profile_controller.RegisterRoutes(base_path)
-	professor_profile_controller.RegisterRoutes(base_path)
+	student_controller.RegisterRoutes(base_path)
+	professor_controller.RegisterRoutes(base_path)
 
 	server.GET("/isAlive", func(c *gin.Context) {
 		c.JSON(200, gin.H{
