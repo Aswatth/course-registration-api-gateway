@@ -3,9 +3,11 @@ package main
 import (
 	"course-registration-system/api-gateway/controllers"
 	"course-registration-system/api-gateway/services"
+	"fmt"
 	"log"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -45,6 +47,10 @@ func main() {
 	professor_controller.Init(*professor_service)
 
 	server := gin.Default()
+	server.Use(cors.New(cors.Config{
+		AllowOrigins: []string{os.Getenv("FRONT_END_URL")},
+		AllowHeaders: []string{"Accept","Origin", "Content-Type", "Authorization"},
+	}))
 
 	base_path := server.Group("/api")
 
@@ -53,6 +59,8 @@ func main() {
 	admin_course_controller.RegisterRoutes(base_path)
 	student_controller.RegisterRoutes(base_path)
 	professor_controller.RegisterRoutes(base_path)
+
+	fmt.Println(os.Getenv("FRONT_END_URL"))
 
 	server.GET("/isAlive", func(c *gin.Context) {
 		c.JSON(200, gin.H{
