@@ -35,6 +35,11 @@ func (obj *AdminProfileController) GetStudentProfile(context *gin.Context) {
 }
 
 func (obj *AdminProfileController) GetAllStudentProfiles(context *gin.Context) {
+	if(context.Query("email_id") != "") {
+		obj.GetStudentProfile(context)
+		return
+	}
+
 	result, err := obj.service.GetStudentProfile(context)
 
 	if err != nil {
@@ -73,6 +78,11 @@ func (obj *AdminProfileController) GetProfessorProfile(context *gin.Context) {
 }
 
 func (obj *AdminProfileController) GetAllProfessorProfiles(context *gin.Context) {
+	if(context.Query("email_id") != "") {
+		obj.GetProfessorProfile(context)
+		return
+	}
+
 	result, err := obj.service.GetAllProfessorProfiles(context)
 
 	if err != nil {
@@ -103,13 +113,11 @@ func (obj *AdminProfileController) RegisterRoutes(rg *gin.RouterGroup) {
 	admin_routes.Use(middlewares.ValidateAuthorization([]string{"ADMIN"}))
 
 	admin_routes.POST("/students", obj.CreateStudent)
-	admin_routes.GET("/students/:email_id", obj.GetStudentProfile)
 	admin_routes.GET("/students", obj.GetAllStudentProfiles)
 	admin_routes.DELETE("/students/:email_id", obj.DeleteStudent)
 	admin_routes.PUT("/students/:email_id", obj.UpdateStudent)
 
 	admin_routes.POST("/professors", obj.CreateProfessor)
-	admin_routes.GET("/professors/:email_id", obj.GetProfessorProfile)
 	admin_routes.GET("/professors", obj.GetAllProfessorProfiles)
 	admin_routes.DELETE("/professors/:email_id", obj.DeleteProfessor)
 	admin_routes.PUT("/professors/:email_id", obj.UpdateProfessor)

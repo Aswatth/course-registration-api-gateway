@@ -25,7 +25,7 @@ func (obj *AdminProfileService) CreateStudentProfile(context *gin.Context) {
 }
 
 func (obj *AdminProfileService) GetStudentProfile(context *gin.Context) ([]byte, error) {
-	req, _ := http.NewRequest("GET", os.Getenv("PROFILE_SERVICE")+"/admin/students/"+context.Param("email_id"), context.Request.Body)
+	req, _ := http.NewRequest("GET", os.Getenv("PROFILE_SERVICE")+"/admin/students?email_id="+context.Query("email_id"), context.Request.Body)
 
 	req.Header.Set("Authorization", context.Request.Header.Get("Authorization"))
 
@@ -69,7 +69,7 @@ func (obj *AdminProfileService) CreateProfessorProfile(context *gin.Context) {
 }
 
 func (obj *AdminProfileService) GetProfessorProfile(context *gin.Context) ([]byte, error) {
-	req, _ := http.NewRequest("GET", os.Getenv("PROFILE_SERVICE")+"/admin/professors/"+context.Param("email_id"), context.Request.Body)
+	req, _ := http.NewRequest("GET", os.Getenv("PROFILE_SERVICE")+"/admin/professors?email_id="+context.Query("email_id"), context.Request.Body)
 
 	req.Header.Set("Authorization", context.Request.Header.Get("Authorization"))
 
