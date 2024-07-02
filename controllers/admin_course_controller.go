@@ -31,7 +31,7 @@ func (obj *AdminCourseController) GetCourse(context *gin.Context) {
 	var data interface{}
 
 	json.Unmarshal(result, &data)
-
+	
 	context.JSON(http.StatusOK, data)
 }
 
@@ -40,7 +40,17 @@ func (obj AdminCourseController) GetAllCourses(context *gin.Context) {
 		obj.GetCourse(context)
 		return
 	}
-	obj.service.GetAllCourses(context)
+	
+	result, err := obj.service.GetAllCourses(context)
+
+	if err != nil {
+		context.AbortWithError(http.StatusBadGateway, err)
+	}
+
+	var data interface{}
+	json.Unmarshal(result, &data)
+
+	context.JSON(http.StatusOK, data)
 }
 
 func (obj *AdminCourseController) UpdateCourse(context *gin.Context) {
