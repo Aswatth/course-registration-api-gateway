@@ -35,6 +35,14 @@ func (obj *AdminCourseController) GetCourse(context *gin.Context) {
 	context.JSON(http.StatusOK, data)
 }
 
+func (obj AdminCourseController) GetAllCourses(context *gin.Context) {
+	if(context.Query("course_id") != "") {
+		obj.GetCourse(context)
+		return
+	}
+	obj.service.GetAllCourses(context)
+}
+
 func (obj *AdminCourseController) UpdateCourse(context *gin.Context) {
 	obj.service.UpdateCourse(context)
 }
@@ -49,7 +57,7 @@ func (obj *AdminCourseController) RegisterRoutes(rg *gin.RouterGroup) {
 	admin_routes.Use(middlewares.ValidateAuthorization([]string{"ADMIN"}))
 
 	admin_routes.POST("", obj.CreateCourse)
-	admin_routes.GET("/:course_id", obj.GetCourse)
+	admin_routes.GET("", obj.GetCourse)
 	admin_routes.PUT("/:course_id", obj.UpdateCourse)
 	admin_routes.DELETE("/:course_id", obj.DeleteCourse)
 }
