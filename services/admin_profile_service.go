@@ -20,11 +20,9 @@ func (obj *AdminProfileService) Init() {
 }
 
 func (obj *AdminProfileService) studentGetAction(fetch_all bool, context *gin.Context) {
-	url := ""
-	if(fetch_all) {
-		url = os.Getenv("PROFILE_SERVICE")+"/admin/students"
-	} else {
-		url = os.Getenv("PROFILE_SERVICE")+"/admin/students?email_id="+context.Query("email_id")
+	url := os.Getenv("PROFILE_SERVICE")+"/admin/students"
+	if(!fetch_all) {
+		url += "?email_id="+context.Query("email_id")
 	}
 
 	req, err := http.NewRequest("GET", url, context.Request.Body)
@@ -51,6 +49,7 @@ func (obj *AdminProfileService) studentGetAction(fetch_all bool, context *gin.Co
 		}
 	}
 }
+
 func (obj *AdminProfileService) StudentProfileActions(action string, context *gin.Context) {
 	action = strings.ToUpper(action)
 	
@@ -98,11 +97,10 @@ func (obj *AdminProfileService) StudentProfileActions(action string, context *gi
 }
 
 func (obj *AdminProfileService) professorGetAction(fetch_all bool, context *gin.Context) {
-	url := ""
-	if(fetch_all) {
-		url = os.Getenv("PROFILE_SERVICE")+"/admin/professors"
-	} else {
-		url = os.Getenv("PROFILE_SERVICE")+"/admin/professors?email_id="+context.Query("email_id")
+	url := os.Getenv("PROFILE_SERVICE")+"/admin/professors"
+
+	if(!fetch_all) {
+		url += "?email_id="+context.Query("email_id")
 	}
 
 	req, err := http.NewRequest("GET", url, context.Request.Body)
@@ -129,6 +127,7 @@ func (obj *AdminProfileService) professorGetAction(fetch_all bool, context *gin.
 		}
 	}
 }
+
 func (obj *AdminProfileService) ProfessorProfileActions(action string, context *gin.Context) {
 	action = strings.ToUpper(action)
 	
