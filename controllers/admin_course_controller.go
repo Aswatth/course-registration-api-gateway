@@ -3,8 +3,6 @@ package controllers
 import (
 	"course-registration-system/api-gateway/middlewares"
 	"course-registration-system/api-gateway/services"
-	"encoding/json"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,47 +16,19 @@ func (obj *AdminCourseController) Init(service services.AdminCourseService) {
 }
 
 func (obj *AdminCourseController) CreateCourse(context *gin.Context) {
-	obj.service.CreateCourse(context)
+	obj.service.CourseActions("POST", context)
 }
 
 func (obj *AdminCourseController) GetCourse(context *gin.Context) {
-	result, err := obj.service.GetCourse(context)
-
-	if err != nil {
-		context.AbortWithError(http.StatusBadGateway, err)
-	}
-
-	var data interface{}
-
-	json.Unmarshal(result, &data)
-	
-	context.JSON(http.StatusOK, data)
-}
-
-func (obj AdminCourseController) GetAllCourses(context *gin.Context) {
-	if(context.Query("course_id") != "") {
-		obj.GetCourse(context)
-		return
-	}
-	
-	result, err := obj.service.GetAllCourses(context)
-
-	if err != nil {
-		context.AbortWithError(http.StatusBadGateway, err)
-	}
-
-	var data interface{}
-	json.Unmarshal(result, &data)
-
-	context.JSON(http.StatusOK, data)
+	obj.service.CourseActions("GET", context)
 }
 
 func (obj *AdminCourseController) UpdateCourse(context *gin.Context) {
-	obj.service.UpdateCourse(context)
+	obj.service.CourseActions("PUT", context)
 }
 
 func (obj *AdminCourseController) DeleteCourse(context *gin.Context) {
-	obj.service.DeleteCourse(context)
+	obj.service.CourseActions("DELETE", context)
 }
 
 func (obj *AdminCourseController) RegisterRoutes(rg *gin.RouterGroup) {
