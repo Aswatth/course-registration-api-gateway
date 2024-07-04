@@ -80,6 +80,36 @@ func (obj *ProfessorProfileService) UpdateProfessorPassword(context *gin.Context
 	}
 }
 
+func (obj *ProfessorProfileService) GetAvailableCourses(context *gin.Context) {
+	req, err := http.NewRequest("GET", os.Getenv("COURSE_SERVICE")+"/courses", context.Request.Body)
+
+	if err != nil {
+		log.Println(err.Error())
+		context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"response": "error creating a new request"})
+	} else {
+		req.Header.Set("Authorization", context.Request.Header.Get("Authorization"))
+
+		response, err := obj.client.Do(req)
+
+		if err != nil {
+			log.Println(err.Error())
+			context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"response": "error executing request"})
+		} else {
+			var data interface{}
+
+			body, _ := io.ReadAll(response.Body)
+
+			json.Unmarshal(body, &data)
+
+			if data == nil {
+				context.Status(response.StatusCode)
+			} else {
+				context.JSON(response.StatusCode, data)
+			}
+		}
+	}
+}
+
 func (obj *ProfessorProfileService) OfferCourse(context *gin.Context) {
 	//Check if course exists
 	request_data := make(map[string]any)
@@ -88,14 +118,13 @@ func (obj *ProfessorProfileService) OfferCourse(context *gin.Context) {
 
 	json.Unmarshal(request_body, &request_data)
 
-	log.Println(fmt.Sprint(request_data["course_id"]))
-
-	new_req, _ := http.NewRequest("GET", os.Getenv("COURSE_SERVICE")+"/courses/"+fmt.Sprint(request_data["course_id"]), context.Request.Body)
+	new_req, _ := http.NewRequest("GET", os.Getenv("COURSE_SERVICE")+"/courses?course_id="+fmt.Sprint(request_data["course_id"]), context.Request.Body)
 	response, _ := obj.client.Do(new_req)
 
 	resp_body, _ := io.ReadAll(response.Body)
 
 	response_data := make(map[string]any)
+	
 	json.Unmarshal(resp_body, &response_data)
 
 	if fmt.Sprint(request_data["course_id"]) != fmt.Sprint(response_data["course_id"]) {

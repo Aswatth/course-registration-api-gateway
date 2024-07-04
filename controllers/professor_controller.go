@@ -23,6 +23,10 @@ func (obj *ProfessorProfileController) UpdateProfessorPassword(context *gin.Cont
 	obj.service.UpdateProfessorPassword(context)
 }
 
+func (obj *ProfessorProfileController) GetAvailableCourses (context *gin.Context) {
+	obj.service.GetAvailableCourses(context)
+}
+
 func (obj *ProfessorProfileController) OfferCourse(context *gin.Context) {
 	obj.service.OfferCourse(context)
 }
@@ -47,6 +51,7 @@ func (obj *ProfessorProfileController) RegisterRoutes(rg *gin.RouterGroup) {
 	professor_routes.GET("/:email_id", obj.GetProfessorProfile)
 	professor_routes.PUT("/password/:email_id", obj.UpdateProfessorPassword)
 
+	professor_routes.GET("/courses", obj.GetAvailableCourses)
 	professor_routes.POST("/offered_course", obj.OfferCourse)
 	professor_routes.GET("/offered_course", obj.GetOfferedCourse)
 	professor_routes.PUT("/offered_course/:crn", obj.UpdateOfferedCourse)
