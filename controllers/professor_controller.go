@@ -31,8 +31,13 @@ func (obj *ProfessorProfileController) OfferCourse(context *gin.Context) {
 	obj.service.OfferCourse(context)
 }
 
-func (obj *ProfessorProfileController) GetOfferedCourse(context *gin.Context) {
-	obj.service.GetOfferedCourses(context)
+func (obj *ProfessorProfileController) GetOfferedCourses(context *gin.Context) {
+	if(context.Query("crn") != "") {
+		obj.service.GetOfferedCoursesByCRN(context)
+		return
+	} else if(context.Query("email_id") != "" ) {
+		obj.service.GetOfferedCoursesByProfessor(context)
+	}
 }
 
 func (obj *ProfessorProfileController) UpdateOfferedCourse(context *gin.Context) {
@@ -53,7 +58,7 @@ func (obj *ProfessorProfileController) RegisterRoutes(rg *gin.RouterGroup) {
 
 	professor_routes.GET("/courses", obj.GetAvailableCourses)
 	professor_routes.POST("/offered_course", obj.OfferCourse)
-	professor_routes.GET("/offered_course", obj.GetOfferedCourse)
+	professor_routes.GET("/offered_course", obj.GetOfferedCourses)
 	professor_routes.PUT("/offered_course/:crn", obj.UpdateOfferedCourse)
 	professor_routes.DELETE("/offered_course/:crn", obj.DeleteOfferedCourse)
 }

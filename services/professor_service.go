@@ -160,8 +160,30 @@ func (obj *ProfessorProfileService) OfferCourse(context *gin.Context) {
 		}
 	}
 }
+func (obj *ProfessorProfileService) GetOfferedCoursesByCRN(context *gin.Context) {
+	req, err := http.NewRequest("GET", os.Getenv("REGISTRATION_SERVICE")+"/offered_course?crn="+context.Query("crn"), context.Request.Body)
 
-func (obj *ProfessorProfileService) GetOfferedCourses(context *gin.Context) {
+	if err != nil {
+		context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"response": "error creating new request"})
+	} else {
+		req.Header.Set("Authorization", context.Request.Header.Get("Authorization"))
+
+		response, err := obj.client.Do(req)
+
+		if err != nil {
+			log.Println(err.Error())
+			context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"response": "error executing request"})
+		} else {
+			result, _ := io.ReadAll(response.Body)
+
+			var result_data interface{}
+			json.Unmarshal(result, &result_data)
+			context.JSON(response.StatusCode, result_data)
+		}
+	}
+}
+
+func (obj *ProfessorProfileService) GetOfferedCoursesByProfessor(context *gin.Context) {
 	req, err := http.NewRequest("GET", os.Getenv("REGISTRATION_SERVICE")+"/offered_course?email_id="+context.Query("email_id"), context.Request.Body)
 
 	if err != nil {
