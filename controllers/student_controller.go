@@ -23,6 +23,10 @@ func (obj *StudentProfileController) UpdateStudentPassword(context *gin.Context)
 	obj.service.UpdateStudentPassword(context)
 }
 
+func (obj *StudentProfileController) GetAllOfferedCourses(context *gin.Context) {
+	obj.service.GetAllOfferedCourses(context)
+}
+
 func (obj *StudentProfileController) RegisterCourse(context *gin.Context) {
 	obj.service.RegisterCourse(context)
 }
@@ -48,6 +52,7 @@ func (obj *StudentProfileController) RegisterRoutes(rg *gin.RouterGroup) {
 	student_routes.PUT("/password/:email_id", obj.UpdateStudentPassword)
 
 	student_routes.POST("/register_course", obj.RegisterCourse)
+	student_routes.GET("/offered_courses", obj.GetAllOfferedCourses)
 	student_routes.GET("/register_course/:student_email_id", obj.GetRegisteredCourses)
 	student_routes.DELETE("/register_course/:student_email_id", obj.DeleteRegisteredCourses)
 	student_routes.PUT("/register_course/:student_email_id", obj.UpdateRegisteredCourses)

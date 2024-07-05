@@ -80,6 +80,58 @@ func (obj *StudentProfileService) UpdateStudentPassword(context *gin.Context) {
 	}
 }
 
+func (obj *StudentProfileService) GetAllOfferedCourses(context *gin.Context) {
+	req, err := http.NewRequest("GET", os.Getenv("REGISTRATION_SERVICE")+"/offered_course", context.Request.Body)
+
+	if err != nil {
+		context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"response": "error creating new request"})
+	} else {
+		req.Header.Set("Authorization", context.Request.Header.Get("Authorization"))
+
+		response, err := obj.client.Do(req)
+
+		if err != nil {
+			log.Println(err.Error())
+			context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"response": "error executing request"})
+		} else {
+			result, _ := io.ReadAll(response.Body)
+
+			var result_data []interface{}
+
+			json.Unmarshal(result, &result_data)
+
+			//Get course details for each offered course
+			for _, data := range result_data {
+				course_id := fmt.Sprint(data.(map[string]interface{})["course_id"])
+				course_req, err := http.NewRequest("GET", os.Getenv("COURSE_SERVICE")+"/courses?course_id="+course_id, context.Request.Body)
+
+				if err != nil {
+					context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"response": "error creating new request"})
+				} else {
+					course_req.Header.Set("Authorization", context.Request.Header.Get("Authorization"))
+
+					course_response, err := obj.client.Do(course_req)
+
+					if err != nil {
+						log.Println(err.Error())
+						context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"response": "error executing request"})
+					} else {
+						course_result, _ := io.ReadAll(course_response.Body)
+
+						var course_result_data interface{}
+
+						json.Unmarshal(course_result, &course_result_data)
+
+						data.(map[string]interface{})["course_info"] = course_result_data
+					}
+				}
+			}
+
+			context.JSON(response.StatusCode, result_data)
+		}
+	}
+}
+
 func (obj *StudentProfileService) RegisterCourse(context *gin.Context) {
 	//check if crns are valid
 	request_data := make(map[string]any)
