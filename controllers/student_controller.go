@@ -53,7 +53,7 @@ func (obj *StudentProfileController) RegisterRoutes(rg *gin.RouterGroup) {
 
 	student_routes.POST("/register_course", obj.RegisterCourse)
 	student_routes.GET("/offered_courses", obj.GetAllOfferedCourses)
-	student_routes.GET("/register_course/:student_email_id", obj.GetRegisteredCourses)
+	student_routes.GET("/register_course", obj.GetRegisteredCourses)
 	student_routes.DELETE("/register_course/:student_email_id", obj.DeleteRegisteredCourses)
 	student_routes.PUT("/register_course/:student_email_id", obj.UpdateRegisteredCourses)
 }
