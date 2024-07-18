@@ -1,7 +1,9 @@
 package services
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -64,7 +66,49 @@ func (obj *AdminCourseService) CourseActions(action string, context *gin.Context
 		}
 	case "POST": 
 	case "PUT": fallthrough
-	case "DELETE": {url += "/"+context.Param("course_id")}
+	case "DELETE": {
+		//Check if given course is offered
+		course_id := context.Param("course_id")
+
+		req, err := http.NewRequest("GET", os.Getenv("REGISTRATION_SERVICE")+"/offered_course?course_id="+fmt.Sprint(course_id), context.Request.Body)
+
+		if err != nil {
+			log.Println(err.Error())
+			context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"response": "error creating a new request"})
+		} else {
+			response, err := obj.client.Do(req)
+		
+			if (err != nil) {
+				log.Println(err.Error())
+				context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"response": "error executing a new request"})
+			} else {
+				if(response.StatusCode == 200) {
+					var data []interface{}
+
+					body, _ := io.ReadAll(response.Body)
+
+					json.Unmarshal(body, &data)
+
+					if(len(data) != 0) {
+						context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"response": "cannot delete an offered course."})
+						return
+					} else {
+						context.Request.Body = io.NopCloser(bytes.NewReader(body))
+						url += "/"+context.Param("course_id")
+					}
+					
+				} else {
+					var data interface{}
+	
+					body, _ := io.ReadAll(response.Body)
+	
+					json.Unmarshal(body, &data)
+	
+					context.JSON(response.StatusCode, data)
+				}
+			}
+		}
+	}
 	}
 
 	req, err := http.NewRequest(action, url, context.Request.Body)
