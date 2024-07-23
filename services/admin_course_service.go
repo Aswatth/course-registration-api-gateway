@@ -65,7 +65,7 @@ func (obj *AdminCourseService) CourseActions(action string, context *gin.Context
 			obj.courseGetAction(true, context)
 		}
 	case "POST": 
-	case "PUT": fallthrough
+	case "PUT": url += "/"+context.Param("course_id")
 	case "DELETE": {
 		//Check if given course is offered
 		course_id := context.Param("course_id")

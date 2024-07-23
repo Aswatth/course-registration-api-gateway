@@ -63,7 +63,7 @@ func (obj *AdminProfileService) StudentProfileActions(action string, context *gi
 			obj.studentGetAction(true, context)
 		}
 	case "POST": 
-	case "PUT": fallthrough
+	case "PUT": url += "/"+context.Param("email_id")
 	case "DELETE": {
 			req, err := http.NewRequest("GET", os.Getenv("REGISTRATION_SERVICE") + "/register_course?email_id="+context.Param("email_id"), context.Request.Body)
 
@@ -182,7 +182,7 @@ func (obj *AdminProfileService) ProfessorProfileActions(action string, context *
 			obj.professorGetAction(true, context)
 		}
 	case "POST": 
-	case "PUT": fallthrough
+	case "PUT": url += "/"+context.Param("email_id")
 	case "DELETE": {
 		req, err := http.NewRequest("GET", os.Getenv("REGISTRATION_SERVICE") + "/offered_course?email_id="+context.Param("email_id"), context.Request.Body)
 
