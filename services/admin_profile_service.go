@@ -84,11 +84,36 @@ func (obj *AdminProfileService) StudentProfileActions(action string, context *gi
 		
 						json.Unmarshal(body, &data)
 
-						if(data.(map[string]interface{})["registered_course_crns"] != nil) {
+						//Check if student to delete has registered for atleast 1 course
+						if(data.(map[string]interface{})["registered_course_crns"] != nil && len(data.(map[string]interface{})["registered_course_crns"].([]interface{})) != 0) {
 							context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"response": "cannot delete a student registered for a course"})
 							return
-						} else {
-							url += "/"+context.Param("email_id")
+						} else if(data.(map[string]interface{})["registered_course_crns"] != nil && len(data.(map[string]interface{})["registered_course_crns"].([]interface{})) == 0){ //No course registered but record exists in db then delete it
+							del_req, err := http.NewRequest("DELETE", os.Getenv("REGISTRATION_SERVICE") + "/register_course?email_id="+context.Param("email_id"), context.Request.Body)
+
+							if err != nil {
+								log.Println(err.Error())
+								context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"response": "error creating a new request"})
+							} else{
+								del_response, err := obj.client.Do(del_req)
+		
+								if (err != nil) {
+									log.Println(err.Error())
+									context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"response": "error executing a new request"})
+								} else{
+									if(del_response.StatusCode != 200) {
+										var data interface{}
+		
+										body, _ := io.ReadAll(response.Body)
+						
+										json.Unmarshal(body, &data)
+
+										context.AbortWithStatusJSON(del_response.StatusCode, data)
+									} else {
+										url += "/"+context.Param("email_id")
+									}
+								}
+							}
 						}
 		
 					} else {
