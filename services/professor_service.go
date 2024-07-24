@@ -41,11 +41,7 @@ func (obj *ProfessorProfileService) GetProfessorProfile(context *gin.Context) {
 
 			json.Unmarshal(body, &data)
 
-			if data == nil {
-				context.Status(response.StatusCode)
-			} else {
-				context.JSON(response.StatusCode, data)
-			}
+			context.JSON(response.StatusCode, data)
 		}
 	}
 }
