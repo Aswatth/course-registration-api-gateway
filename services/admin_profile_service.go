@@ -183,13 +183,50 @@ func (obj *AdminProfileService) professorGetAction(fetch_all bool, context *gin.
 			log.Println(err.Error())
 			context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"response": "error executing a new request"})
 		} else {
-			var data interface{}
+			var data []interface{}
 
 			body, _ := io.ReadAll(response.Body)
 
 			json.Unmarshal(body, &data)
 
-			context.JSON(response.StatusCode, data)
+			//Get offered_courses
+			var final_data []interface{}
+			for _, professor_data := range data {
+				email_id := professor_data.(map[string]interface{})["email_id"].(string)
+
+				req, err := http.NewRequest("GET", os.Getenv("REGISTRATION_SERVICE") + "/offered_course?email_id="+email_id, context.Request.Body)
+
+				if err != nil {
+					log.Println(err.Error())
+					context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"response": "error creating a new request"})
+				} else {
+					res, err := obj.client.Do(req)
+
+					if err != nil {
+						log.Println(err.Error())
+						context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"response": "error executing a new request"})
+					} else {
+						var offered_course_data []interface{}
+
+						res_body, _ := io.ReadAll(res.Body)
+
+						json.Unmarshal(res_body, &offered_course_data)
+
+						for index, ofd := range offered_course_data {
+							delete(ofd.(map[string]interface{}), "day_time")
+							delete(ofd.(map[string]interface{}), "offered_by")
+
+							offered_course_data[index] = ofd
+						}
+
+						professor_data.(map[string]interface{})["offered_courses"] = offered_course_data
+
+						final_data = append(final_data, professor_data)
+					}
+				}
+			}			
+
+			context.JSON(response.StatusCode, final_data)
 		}
 	}
 }
