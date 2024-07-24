@@ -39,14 +39,19 @@ func (obj *AdminProfileService) studentGetAction(fetch_all bool, context *gin.Co
 			log.Println(err.Error())
 			context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"response": "error executing a new request"})
 		} else {
-			var data []interface{}
+			var data interface{}
 
 			body, _ := io.ReadAll(response.Body)
 
 			json.Unmarshal(body, &data)
 
+			if(!fetch_all) {
+				context.JSON(response.StatusCode, data)
+				return
+			}
+
 			var final_data []interface{}
-			for _, student_data := range data {
+			for _, student_data := range data.([]interface{}) {
 				email_id := student_data.(map[string]interface{})["email_id"].(string)
 
 				req, err := http.NewRequest("GET", os.Getenv("REGISTRATION_SERVICE") + "/register_course?email_id="+email_id, context.Request.Body)
@@ -217,15 +222,19 @@ func (obj *AdminProfileService) professorGetAction(fetch_all bool, context *gin.
 			log.Println(err.Error())
 			context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"response": "error executing a new request"})
 		} else {
-			var data []interface{}
+			var data interface{}
 
 			body, _ := io.ReadAll(response.Body)
 
 			json.Unmarshal(body, &data)
 
+			if(!fetch_all) {
+				context.JSON(response.StatusCode, data)
+				return
+			}
 			//Get offered_courses
 			var final_data []interface{}
-			for _, professor_data := range data {
+			for _, professor_data := range data.([]interface{}) {
 				email_id := professor_data.(map[string]interface{})["email_id"].(string)
 
 				req, err := http.NewRequest("GET", os.Getenv("REGISTRATION_SERVICE") + "/offered_course?email_id="+email_id, context.Request.Body)
@@ -258,7 +267,7 @@ func (obj *AdminProfileService) professorGetAction(fetch_all bool, context *gin.
 						final_data = append(final_data, professor_data)
 					}
 				}
-			}			
+			}
 
 			context.JSON(response.StatusCode, final_data)
 		}
