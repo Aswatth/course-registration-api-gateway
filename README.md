@@ -165,7 +165,7 @@ This is the API-Gateway for all micro-services of course-registration-system, ac
   </tr>
 </table>
 <hr>
-<h3>Professor endpoints</h3>
+<h3>Student endpoints</h3>
 <table>
    <tr>
     <th>Action</th>
