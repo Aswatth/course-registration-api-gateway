@@ -1,5 +1,7 @@
 This is the API-Gateway for all micro-services of course-registration-system.
 
+This acts as an entry point into the system by handling authentication and authorization using <a href="https://jwt.io/">JWT tokens</a> and managing communication across micro-services.
+
 <h1>Micro services</h1>
 <table>
   <tr>
