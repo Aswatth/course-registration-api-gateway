@@ -262,10 +262,7 @@ func (obj *StudentProfileService) UpdateRegisteredCourses(context *gin.Context) 
 
 	json.Unmarshal(request_body, &request_data)
 
-	fmt.Println(request_data["registered_course_crns"].([]interface{}))
-
 	for _, crn := range request_data["registered_course_crns"].([]interface{}) {
-		fmt.Println(crn)
 
 		new_req, _ := http.NewRequest("GET", os.Getenv("REGISTRATION_SERVICE")+"/offered_course?crn="+fmt.Sprint(crn), context.Request.Body)
 		response, _ := obj.client.Do(new_req)
@@ -280,7 +277,7 @@ func (obj *StudentProfileService) UpdateRegisteredCourses(context *gin.Context) 
 
 	context.Request.Body = io.NopCloser(bytes.NewReader(request_body))
 
-	req, _ := http.NewRequest("PUT", os.Getenv("REGISTRATION_SERVICE")+"/register_course?email_id="+context.Query("email_id"), context.Request.Body)
+	req, _ := http.NewRequest("PUT", os.Getenv("REGISTRATION_SERVICE")+"/register_course/"+context.Param("email_id"), context.Request.Body)
 
 	req.Header.Set("Authorization", context.Request.Header.Get("Authorization"))
 
@@ -304,7 +301,7 @@ func (obj *StudentProfileService) UpdateRegisteredCourses(context *gin.Context) 
 }
 
 func (obj *StudentProfileService) DeleteRegisteredCourses(context *gin.Context) {
-	req, err := http.NewRequest("DELETE", os.Getenv("REGISTRATION_SERVICE")+"/register_course/"+context.Param("student_email_id"), context.Request.Body)
+	req, err := http.NewRequest("DELETE", os.Getenv("REGISTRATION_SERVICE")+"/register_course/"+context.Param("email_id"), context.Request.Body)
 
 	if err != nil {
 		context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"response": err.Error()})
